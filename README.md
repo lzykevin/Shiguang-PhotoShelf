@@ -4,6 +4,18 @@
 
 **拾光 1.0 正式版** · macOS 14+ · Apple Silicon 与 Intel
 
+![拾光主界面：本地照片瀑布流、星级筛选、收藏、相册与标签](docs/screenshots/library.png)
+
+## 界面预览
+
+原比例浏览照片，通过星级、收藏、相册和标签整理回忆。
+
+**照片对比** · 并排查看多张照片，支持同步缩放与移动，直接评分和收藏。
+
+![拾光照片对比：并排查看与同步缩放](docs/screenshots/comparison.png)
+
+截图使用应用内置示例照片，素材来源见 [示例素材说明](Sources/PhotoShelf/Resources/Samples/CREDITS.md)。
+
 ## 功能
 
 - 关联多个本地文件夹、增量扫描、离线缩略图浏览；原片留在原位置。
