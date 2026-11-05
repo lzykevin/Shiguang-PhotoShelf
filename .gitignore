@@ -22,3 +22,7 @@ docs/release-1.0-acceptance.md
 *.dmg
 *.zip
 __pycache__/
+
+# Historical interaction prototype stays local, outside the public product.
+Demo/
+scripts/build-demo.sh
