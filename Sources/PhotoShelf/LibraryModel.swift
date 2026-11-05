@@ -106,6 +106,7 @@ import UniformTypeIdentifiers
     @Published var filtersPresented = false
     @Published var sortingPresented = false
     @Published var filterPopoverPresented = false
+    @Published var loadingSamples = false
     @Published var isQuerying = false
     @Published var inspectorWidth: CGFloat = 280
     @Published var sidebarWidth: CGFloat = 216
@@ -517,7 +518,7 @@ import UniformTypeIdentifiers
         do { guard let repository else { throw LibraryError.unavailable("数据库不可用") }; try repository.commit(updated); snapshot = updated; undoManager.removeAllActions(); navigation = .all; refreshAccess(); scheduleQuery() }
         catch { issue = error.localizedDescription }
     }
-    private func refreshAccess() {
+    func refreshAccess() {
         for url in accessURLs.values { url.stopAccessingSecurityScopedResource() }
         accessURLs = [:]; offline = []
         var refreshed = snapshot

@@ -507,10 +507,10 @@ struct WelcomeView: View {
     @EnvironmentObject var model: LibraryModel
     var body: some View {
         VStack(spacing: 20) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 22).fill(Color.accentColor.opacity(0.08)).frame(width: 100, height: 100)
-                Image(systemName: "photo.stack").font(.system(size: 43, weight: .light)).foregroundStyle(Color.accentColor)
-            }
+            Image(nsImage: NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath))
+                .resizable().interpolation(.high).scaledToFit()
+                .frame(width: 100, height: 100)
+                .accessibilityLabel("拾光应用图标")
             VStack(spacing: 9) {
                 Text("给每一张照片，一个位置").font(.system(size: 25, weight: .semibold))
                 Text("从一个本地文件夹开始，浏览、评分，整理你的回忆。\n照片保持原位，所有标记只保存在这台 Mac 上。")
@@ -518,6 +518,12 @@ struct WelcomeView: View {
             }
             Button { model.addFolder() } label: { Label("添加照片文件夹", systemImage: "folder.badge.plus").padding(.horizontal, 12).padding(.vertical, 5) }
                 .buttonStyle(.borderedProminent).controlSize(.large).disabled(model.repository == nil)
+            Button(model.loadingSamples ? "正在载入示例…" : "先用示例照片体验") {
+                Task { await model.loadSampleLibrary() }
+            }.buttonStyle(.plain).foregroundStyle(.secondary)
+                .disabled(model.loadingSamples || model.scanning || model.repository == nil)
+            Text("内含 11 张风景照片、旅行精选相册及示例标签")
+                .font(.caption).foregroundStyle(.tertiary)
             HStack(spacing: 22) {
                 Label("原片只读", systemImage: "lock.shield")
                 Label("0–5 星分级", systemImage: "star")

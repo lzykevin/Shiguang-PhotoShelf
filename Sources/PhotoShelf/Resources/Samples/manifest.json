@@ -1,0 +1,100 @@
+{
+  "albums": [
+    {
+      "sortOrder": 0,
+      "id": "3E5EDCF9-68E9-4CA6-966D-B1D7BAC29717",
+      "name": "旅行精选"
+    }
+  ],
+  "tags": [
+    "天空",
+    "风景"
+  ],
+  "photos": [
+    {
+      "filename": "示例_01.jpg",
+      "rating": 0,
+      "tags": [],
+      "favorite": false,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_02.jpg",
+      "rating": 3,
+      "tags": [],
+      "favorite": true,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_03.jpg",
+      "rating": 4,
+      "tags": [],
+      "favorite": false,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_04.jpg",
+      "rating": 5,
+      "tags": [],
+      "favorite": false,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_05.jpg",
+      "rating": 3,
+      "tags": [],
+      "favorite": false,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_06.jpg",
+      "rating": 1,
+      "tags": [
+        "天空"
+      ],
+      "favorite": false,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_07.jpg",
+      "rating": 0,
+      "tags": [],
+      "favorite": true,
+      "albumIDs": [
+        "3E5EDCF9-68E9-4CA6-966D-B1D7BAC29717"
+      ]
+    },
+    {
+      "filename": "示例_08.jpg",
+      "rating": 2,
+      "tags": [],
+      "favorite": true,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_09.jpg",
+      "rating": 4,
+      "tags": [
+        "风景"
+      ],
+      "favorite": false,
+      "albumIDs": [
+        "3E5EDCF9-68E9-4CA6-966D-B1D7BAC29717"
+      ]
+    },
+    {
+      "filename": "示例_10.jpg",
+      "rating": 3,
+      "tags": [],
+      "favorite": true,
+      "albumIDs": []
+    },
+    {
+      "filename": "示例_12.jpg",
+      "rating": 4,
+      "tags": [],
+      "favorite": true,
+      "albumIDs": []
+    }
+  ]
+}

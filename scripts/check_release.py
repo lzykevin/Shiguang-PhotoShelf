@@ -2,6 +2,7 @@
 """Validate bundled updater configuration; --distribution additionally checks Gatekeeper."""
 import argparse
 import base64
+import json
 import plistlib
 import subprocess
 from pathlib import Path
@@ -18,6 +19,11 @@ assert urlparse(info['SUFeedURL']).scheme == 'https'
 assert len(base64.b64decode(info['SUPublicEDKey'], validate=True)) == 32
 assert info.get('SUEnableInstallerLauncherService') is True
 assert info.get('SUEnableDownloaderService') is True
+samples = args.app / 'Contents/Resources/Samples'
+manifest = json.loads((samples / 'manifest.json').read_text())
+assert len(manifest['photos']) == 11
+assert all((samples / item['filename']).is_file() for item in manifest['photos'])
+assert (samples / 'CREDITS.md').is_file()
 framework = args.app / 'Contents/Frameworks/Sparkle.framework'
 assert framework.exists(), 'Sparkle must be embedded, not only linked'
 for path in ['XPCServices/Installer.xpc', 'XPCServices/Downloader.xpc', 'Updater.app', 'Autoupdate']:

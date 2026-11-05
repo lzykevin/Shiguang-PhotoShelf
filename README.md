@@ -16,6 +16,12 @@
 
 静态照片格式由 macOS ImageIO 解码，包括常见 JPEG、HEIC、PNG、TIFF 及系统支持的 RAW。暂不管理视频和 Live Photo 动态部分；云同步、AI 搜图及人物整理尚未实现。
 
+## 内置示例图库
+
+首次打开可点击“先用示例照片体验”，离线载入 11 张风景照片、旅行精选相册、风景／天空标签，以及现有示例评分和收藏。示例复制到应用自己的数据目录，载入不覆盖已有照片或相册；重复载入不重置整理信息。移除示例来源后可再次载入，恢复原有整理。
+
+照片来源与授权见 [示例素材说明](Sources/PhotoShelf/Resources/Samples/CREDITS.md)。不包含本机路径、文件夹授权、浏览记录或测试备注。
+
 ## 安装与更新
 
 发布入口：[GitHub Releases](https://github.com/lzykevin/PhotoShelf/releases)。没有可用安装包时，请按下面步骤从源码构建。

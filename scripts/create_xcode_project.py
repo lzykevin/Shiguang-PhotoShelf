@@ -55,6 +55,9 @@ for name in ["Info.plist", "PhotoShelf.entitlements", "AppIcon.icns"]:
     resource_refs.append(ref)
     if name.endswith("icns"):
         resource_builds.append(obj("iconbuild", f"isa = PBXBuildFile; fileRef = {ref};"))
+sample_ref = obj("samples", 'isa = PBXFileReference; lastKnownFileType = folder; path = "Sources/PhotoShelf/Resources/Samples"; sourceTree = SOURCE_ROOT;')
+resource_refs.append(sample_ref)
+resource_builds.append(obj("samplesBuild", f'isa = PBXBuildFile; fileRef = {sample_ref};'))
 groups.append(obj("resourcesgroup", f"isa = PBXGroup; children = {listing(resource_refs)}; name = Resources; sourceTree = \"<group>\";"))
 products = obj("products", f"isa = PBXGroup; children = {listing([product_app, product_core])}; name = Products; sourceTree = \"<group>\";")
 main = obj("main", f"isa = PBXGroup; children = {listing(groups + [products])}; sourceTree = \"<group>\";")
