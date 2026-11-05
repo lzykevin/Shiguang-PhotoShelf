@@ -89,6 +89,7 @@ import PhotoLibraryCore
         defer { model.slideshowRandom = oldRandom; model.slideshowLoop = oldLoop }
         model.slideshowRandom = false; model.slideshowLoop = false
         let ids = model.visible.map(\.id)
+        guard ids.count == 2 else { XCTFail("Expected two queried photos before playback"); return }
         model.selection = Set(ids)
         model.openViewer(ids[0])
         XCTAssertEqual(model.viewerSelectedIDs, ids)
@@ -206,10 +207,10 @@ import PhotoLibraryCore
     }
     func wait(_ model: LibraryModel) async throws {
         for _ in 0..<500 {
-            if !model.scanning { try await Task.sleep(for: .milliseconds(150)); return }
+            if !model.scanning && !model.isQuerying { return }
             try await Task.sleep(for: .milliseconds(10))
         }
-        XCTFail("Scan timed out")
+        XCTFail("Scan or query timed out")
     }
     func testFullRatingTagAlbumPersistenceAndOriginalHash() async throws {
         let (model, root, data) = try await scannedModel()
