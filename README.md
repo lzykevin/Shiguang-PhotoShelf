@@ -2,7 +2,7 @@
 
 一款 Swift 原生的 macOS 本地照片管理应用。让个人照片值得回看、容易整理、随时找得到。
 
-**当前状态：1.0.0-beta.1 测试版准备中。** 需要 macOS 14 或更新版本，支持 Apple Silicon 和 Intel。目前尚无 Developer ID 签名与 Apple 公证的安装包；源码可自行构建，本地测试包不代表正式分发版本。
+**拾光 1.0 正式版** · macOS 14+ · Apple Silicon 与 Intel
 
 ## 功能
 
@@ -12,7 +12,7 @@
 - 搜索文件名、标签、备注和相册；日期与标签高级筛选、一步多星级筛选、智能相册。
 - 拍摄日期、添加日期、文件名及星级双向排序。
 - 导出原片副本、系统分享、整理数据备份与恢复。
-- Sparkle 应用内更新：菜单“检查更新…”，设置中可开启自动检查。测试版更新源只推送完成验收的版本。
+- Sparkle 应用内更新：菜单“检查更新…”，设置中可开启自动检查。
 
 静态照片格式由 macOS ImageIO 解码，包括常见 JPEG、HEIC、PNG、TIFF 及系统支持的 RAW。暂不管理视频和 Live Photo 动态部分；云同步、AI 搜图及人物整理尚未实现。
 
@@ -24,11 +24,9 @@
 
 ## 安装与更新
 
-发布入口：[GitHub Releases](https://github.com/lzykevin/PhotoShelf/releases)。没有可用安装包时，请按下面步骤从源码构建。
+从 [GitHub Releases](https://github.com/lzykevin/PhotoShelf/releases/latest) 下载 `PhotoShelf-1.0.0.zip`，解压后将应用拖入“应用程序”。
 
-初期未公证测试包可能被 macOS 安全机制拦截，不建议普通用户关闭系统安全保护。希望顺畅安装的用户可等待正式签名、公证版本。
-
-更新检查仅请求版本信息与安装包，不上传照片或整理数据。自动检查默认关闭，可在“拾光 → 设置 → 软件更新”开启。当前测试通道的更新列表在完成升级验收前保持为空。
+在“拾光 → 检查更新…”查看新版本，也可以在设置中开启自动检查。更新检查不上传照片或整理数据。
 
 ## 构建与测试
 
@@ -42,10 +40,10 @@ swift test
 应用生成于 `build/Build/Products/Release/PhotoShelf.app`。工程由 Python 脚本生成，不需额外安装 XcodeGen。Swift Package 用于测试，不是可分发的沙箱应用包。
 
 ```sh
-./scripts/package-beta.sh
+./scripts/package-release.sh
 ```
 
-生成未公证的本地测试 ZIP；签名、公证、更新签名与发布步骤见 [发布说明](docs/publishing.md)。
+生成发布 ZIP；维护者的打包、签名和更新发布步骤见 [发布说明](docs/publishing.md)。
 
 ## 本地数据
 

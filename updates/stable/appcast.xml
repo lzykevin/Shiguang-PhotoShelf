@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>拾光 PhotoShelf</title>
+    <link>https://github.com/lzykevin/PhotoShelf/releases</link>
+    <description>拾光版本更新</description>
+    <language>zh-cn</language>
+  </channel>
+</rss>

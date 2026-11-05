@@ -93,7 +93,7 @@ struct SettingsView: View {
                 LabeledContent("版本", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "开发构建")
                 Toggle("自动检查更新", isOn: Binding(get: { updater.automaticChecks }, set: { updater.setAutomaticChecks($0) })).disabled(!updater.configured)
                 Button("检查更新…") { updater.check() }.disabled(!updater.canCheck)
-                Text(updater.configured ? "测试版通道 · 检查更新只访问版本信息，不上传照片或整理数据。" : "此构建尚未配置更新服务。")
+                Text(updater.configured ? "检查更新只访问版本信息，不上传照片或整理数据。" : "此构建尚未配置更新服务。")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("浏览") {
