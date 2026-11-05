@@ -14,7 +14,7 @@ struct FolderOverview: View {
     @Environment(\.colorScheme) private var scheme
     private var p: DesignPalette { DesignPalette(dark: scheme == .dark) }
     private var folders: [FolderCover] {
-        let grouped = Dictionary(grouping: model.snapshot.photos, by: \.sourceID)
+        let grouped = Dictionary(grouping: model.activePhotos, by: \.sourceID)
         return model.sortedSources.filter { model.folderSourceID == nil || model.folderSourceID == $0.id }.flatMap { source -> [FolderCover] in
             let photos = (grouped[source.id] ?? []).sorted { $0.sortDate > $1.sortDate }
             @MainActor func orderedPaths(_ nodes: [FolderNode]) -> [String] {
@@ -50,7 +50,7 @@ struct FolderOverview: View {
                 Toggle("包含子文件夹", isOn: $model.folderIncludesSubfolders).toggleStyle(.checkbox).font(.system(size: 11))
                 Picker("来源", selection: $model.folderSourceID) {
                     Text("所有来源").tag(nil as UUID?)
-                    ForEach(model.snapshot.sources) { Text($0.name).tag(Optional($0.id)) }
+                    ForEach(model.activeSources) { Text($0.name).tag(Optional($0.id)) }
                 }.labelsHidden().frame(width: 140)
             }.padding(.horizontal, 24).frame(height: 52)
             if folders.isEmpty {

@@ -31,7 +31,7 @@ extension LibraryModel {
         return folderKey(a, ap) < folderKey(b, bp)
     }
     var sortedSources: [PhotoSource] {
-        snapshot.sources.sorted { folderPrecedes(source: $0.id, path: "", name: $0.name, source: $1.id, path: "", name: $1.name) }
+        activeSources.sorted { folderPrecedes(source: $0.id, path: "", name: $0.name, source: $1.id, path: "", name: $1.name) }
     }
     func sortedFolders(_ nodes: [FolderNode], source: UUID) -> [FolderNode] {
         nodes.sorted { folderPrecedes(source: source, path: $0.path, name: $0.name, source: source, path: $1.path, name: $1.name) }

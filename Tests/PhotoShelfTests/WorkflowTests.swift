@@ -7,6 +7,50 @@ import PhotoLibraryCore
 @testable import PhotoShelf
 
 @MainActor final class WorkflowTests: XCTestCase {
+    func testDetachReaddPreservesAllMetadataAcrossRestartAndBackup() async throws {
+        let (model, root, data) = try await scannedModel()
+        let source = try XCTUnwrap(model.snapshot.sources.first)
+        var state = model.snapshot
+        let album = Album(name: "保留相册")
+        state.albums = [album]; state.tags = ["旅行"]
+        for i in state.photos.indices {
+            state.photos[i].rating = 5; state.photos[i].tags = ["旅行"]
+            state.photos[i].note = "完整保留"; state.photos[i].isFavorite = true
+            state.photos[i].albumIDs = [album.id]
+            state.photos[i].lastViewed = Date(timeIntervalSince1970: 123456)
+        }
+        try model.repository!.commit(state); model.snapshot = state
+        model.detachSource(source)
+        XCTAssertNil(model.issue)
+        XCTAssertTrue(model.activeSources.isEmpty)
+        XCTAssertTrue(model.activePhotos.isEmpty)
+        XCTAssertEqual(model.snapshot.photos, state.photos)
+        let backup = try LibraryRepository.importData(LibraryRepository.exportData(model.snapshot))
+        XCTAssertTrue(backup.sources[0].isDetached)
+        for original in state.photos {
+            var restored = try XCTUnwrap(backup.photos.first { $0.id == original.id })
+            XCTAssertEqual(restored.addedDate.timeIntervalSince1970, original.addedDate.timeIntervalSince1970, accuracy: 0.000001)
+            XCTAssertEqual(restored.modifiedDate.timeIntervalSince1970, original.modifiedDate.timeIntervalSince1970, accuracy: 0.000001)
+            restored.addedDate = original.addedDate; restored.modifiedDate = original.modifiedDate
+            XCTAssertEqual(restored, original)
+        }
+        let reopened = LibraryModel(directory: data)
+        XCTAssertTrue(reopened.activeSources.isEmpty)
+        XCTAssertEqual(reopened.snapshot.photos.sorted { $0.id.uuidString < $1.id.uuidString }, state.photos.sorted { $0.id.uuidString < $1.id.uuidString })
+        reopened.addFolder(url: root); reopened.startScan(); try await wait(reopened)
+        XCTAssertNil(reopened.issue)
+        XCTAssertEqual(reopened.activeSources.map(\.id), [source.id])
+        XCTAssertEqual(reopened.activePhotos.count, state.photos.count)
+        for original in state.photos {
+            XCTAssertEqual(reopened.snapshot.photos.first { $0.id == original.id }, original)
+        }
+        reopened.detachSource(source)
+        reopened.addFolder(url: root); reopened.startScan(); try await wait(reopened)
+        XCTAssertEqual(reopened.snapshot.photos.count, state.photos.count)
+        XCTAssertEqual(reopened.snapshot.albums.map(\.id), [album.id])
+        model.cancelScan(); reopened.cancelScan()
+    }
+
     func testScopedScanPreservesOtherPhotosAndAnnotations() async throws {
         let (model, root, _) = try await scannedModel()
         let a = try XCTUnwrap(model.snapshot.photos.first { $0.filename == "a.png" })

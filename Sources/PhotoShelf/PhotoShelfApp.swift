@@ -24,7 +24,7 @@ import PhotoLibraryCore
             }
             CommandGroup(replacing: .newItem) {
                 Button("添加照片文件夹…") { model.addFolder() }.keyboardShortcut("o").disabled(model.scanning || model.repository == nil)
-                Button("刷新照片来源") { model.startScan() }.keyboardShortcut("r").disabled(model.scanning || model.snapshot.sources.isEmpty)
+                Button("刷新照片来源") { model.startScan() }.keyboardShortcut("r").disabled(model.scanning || model.activeSources.isEmpty)
                 Button("停止扫描") { model.cancelScan() }.disabled(!model.scanning)
                 Divider()
                 Button("新建相册…") { model.createAlbum() }.keyboardShortcut("n", modifiers: [.command, .shift]).disabled(model.viewerID != nil || !model.comparisonIDs.isEmpty)
@@ -101,7 +101,7 @@ struct SettingsView: View {
             }
             Section("照片来源") {
                 ForEach(model.snapshot.sources) { source in
-                    HStack { Text(source.name); Spacer(); Text(model.offline.contains(source.id) ? "离线" : "在线"); Button("重新关联") { model.rebind(source) }; Button("解绑") { model.removeSource(source) } }
+                    HStack { Text(source.name); Spacer(); Text(source.isDetached ? "已移除 · 整理信息已保留" : model.offline.contains(source.id) ? "离线" : "在线"); Button("重新关联") { model.rebind(source) }; Button("移除来源") { model.removeSource(source) }.disabled(source.isDetached) }
                 }
             }
             Section("本地数据") {

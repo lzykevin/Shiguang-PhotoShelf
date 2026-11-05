@@ -67,7 +67,7 @@ extension LibraryModel {
         catch { issue = "浏览记录保存失败：\(error.localizedDescription)" }
     }
     func restoreAfterViewer(_ id: UUID) {
-        let results = currentQuery().apply(to:snapshot.photos, albums:snapshot.albums)
+        let results = currentQuery().apply(to:activePhotos, albums:snapshot.albums)
         visible = results
         let ids = Set(results.map(\.id))
         if ids.contains(id) { selection = [id] }

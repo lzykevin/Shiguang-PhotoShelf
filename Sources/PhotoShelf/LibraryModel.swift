@@ -164,10 +164,16 @@ import UniformTypeIdentifiers
     func url(for photo: Photo) -> URL? { offline.contains(photo.sourceID) || photo.missing ? nil : accessURLs[photo.sourceID]?.appendingPathComponent(photo.relativePath) }
     func cacheKey(_ photo: Photo) -> String { "\(photo.id)-\(photo.modifiedDate.timeIntervalSince1970)-\(photo.byteSize)" }
 
+    var activeSources: [PhotoSource] { snapshot.sources.filter { !$0.isDetached } }
+    var activePhotos: [Photo] {
+        let ids = Set(activeSources.map(\.id))
+        return snapshot.photos.filter { ids.contains($0.sourceID) }
+    }
+
     func scheduleQuery() {
         queryTask?.cancel()
         let query = currentQuery()
-        let photos = snapshot.photos, albums = snapshot.albums
+        let photos = activePhotos, albums = snapshot.albums
         revision += 1; let token = revision
         isQuerying = true
         queryTask = Task { [weak self] in
@@ -359,18 +365,23 @@ import UniformTypeIdentifiers
     }
     func addFolder(url: URL) {
         let root = url.standardizedFileURL.resolvingSymlinksInPath()
-        if snapshot.sources.contains(where: { root.path == $0.path || root.path.hasPrefix($0.path + "/") }) {
+        if activeSources.contains(where: { root.path == $0.path || root.path.hasPrefix($0.path + "/") }) {
             issue = "此文件夹已包含在现有照片来源中，无需重复添加。"; return
         }
         do {
             let bookmark = try root.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess], includingResourceValuesForKeys: nil, relativeTo: nil)
             let source = PhotoSource(name: root.lastPathComponent, path: root.path, bookmark: bookmark)
             var updated = snapshot
-            guard !updated.sources.contains(where: { $0.path.hasPrefix(root.path + "/") }) else {
+            guard !activeSources.contains(where: { $0.path.hasPrefix(root.path + "/") }) else {
                 issue = "此目录包含已经关联的照片来源。请继续使用现有来源，或先备份整理数据并在图库设置中调整关联。现有照片和整理信息保持不变。"
                 return
             }
-            updated.sources.append(source)
+            if let index = updated.sources.firstIndex(where: { $0.isDetached && $0.path == root.path }) {
+                updated.sources[index].detached = nil
+                updated.sources[index].bookmark = bookmark
+            } else {
+                updated.sources.append(source)
+            }
             guard let repository else { throw LibraryError.unavailable("数据库不可用") }; try repository.commit(updated); snapshot = updated; undoManager.removeAllActions()
         } catch { issue = error.localizedDescription }
     }
@@ -477,12 +488,13 @@ import UniformTypeIdentifiers
         panel.message = "选择“\(source.name)”对应的原文件夹。仅在能确认文件身份时保留关联；无法匹配的旧照片将显示缺失。"
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let root = url.standardizedFileURL.resolvingSymlinksInPath()
-        guard !snapshot.sources.contains(where: { $0.id != source.id && (root.path == $0.path || root.path.hasPrefix($0.path + "/") || $0.path.hasPrefix(root.path + "/")) }) else {
+        guard !activeSources.contains(where: { $0.id != source.id && (root.path == $0.path || root.path.hasPrefix($0.path + "/") || $0.path.hasPrefix(root.path + "/")) }) else {
             issue = "选择的目录与另一个照片来源重叠。"; return
         }
         do {
             var updated = snapshot
             guard let i = updated.sources.firstIndex(where: { $0.id == source.id }) else { return }
+            updated.sources[i].detached = nil
             updated.sources[i].path = root.path
             updated.sources[i].bookmark = try root.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess], includingResourceValuesForKeys: nil, relativeTo: nil)
             guard let repository else { throw LibraryError.unavailable("数据库不可用") }; try repository.commit(updated); snapshot = updated
@@ -490,12 +502,18 @@ import UniformTypeIdentifiers
         } catch { issue = error.localizedDescription }
     }
     func removeSource(_ source: PhotoSource) {
-        guard !scanning, confirm(title: "移除来源“\(source.name)”？", message: "将移除此来源的索引、评分、标签与相册关联。原照片不会删除。继续前会自动备份整理数据到本地数据目录；也可取消后先手动导出备份。") else { return }
+        guard !scanning, confirm(title: "移除来源“\(source.name)”？", message: "将隐藏此来源并停止扫描。评分、标签、备注、收藏和相册关联全部保留，重新添加同一文件夹即可恢复。原照片不会删除，移除前仍会自动备份。") else { return }
+        detachSource(source)
+    }
+
+    func detachSource(_ source: PhotoSource) {
+        guard !scanning, let index = snapshot.sources.firstIndex(where: { $0.id == source.id }), !snapshot.sources[index].isDetached else { return }
         do {
             guard let directory = repository?.directory else { throw LibraryError.unavailable("数据库不可用") }
             try LibraryRepository.exportData(snapshot).write(to: directory.appendingPathComponent("BeforeDetach-\(UUID().uuidString).json"), options: .atomic)
         } catch { issue = "解绑前备份失败，来源已保留：\(error.localizedDescription)"; return }
-        var updated = snapshot; updated.sources.removeAll { $0.id == source.id }; updated.photos.removeAll { $0.sourceID == source.id }
+        var updated = snapshot; updated.sources[index].detached = true
+        updated.sources[index].bookmark = nil
         do { guard let repository else { throw LibraryError.unavailable("数据库不可用") }; try repository.commit(updated); snapshot = updated; undoManager.removeAllActions(); navigation = .all; refreshAccess(); scheduleQuery() }
         catch { issue = error.localizedDescription }
     }
@@ -504,7 +522,7 @@ import UniformTypeIdentifiers
         accessURLs = [:]; offline = []
         var refreshed = snapshot
         var renewedBookmark = false
-        for source in snapshot.sources {
+        for source in activeSources {
             do {
                 var stale = false
                 let url: URL
@@ -546,7 +564,7 @@ import UniformTypeIdentifiers
     func checkLibraryOnLaunch() {
         guard !checkedOnLaunch else { return }
         checkedOnLaunch = true
-        if !snapshot.sources.isEmpty { startScan() }
+        if !activeSources.isEmpty { startScan() }
     }
 
     func startScan(changedPaths: Set<String>? = nil) {
@@ -560,7 +578,7 @@ import UniformTypeIdentifiers
         catch { issue = "索引检查失败：\(error.localizedDescription)"; return }
         refreshAccess()
         scanning = true; scanCount = 0; scanWarnings = []; scanAgain = false
-        let sources = snapshot.sources
+        let sources = activeSources
         scanTask = Task { [weak self] in
             guard let self else { return }
             for source in sources {

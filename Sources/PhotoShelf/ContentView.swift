@@ -38,7 +38,7 @@ struct ContentView: View {
                             }
                             HStack(spacing:0) {
                                 Group {
-                                    if model.snapshot.sources.isEmpty { WelcomeView() }
+                                    if model.activeSources.isEmpty { WelcomeView() }
                                     else if model.visible.isEmpty {
                                         VStack(spacing:14) {
                                             Image(systemName:"magnifyingglass").font(.system(size:26,weight:.light)).frame(width:64,height:64).background(p.raised.opacity(0.35),in:Circle())
@@ -220,7 +220,7 @@ struct ContentView: View {
                 ViewThatFits { Text(model.navigation == .folders ? "按文件夹回看你的照片" : "双击或空格查看 · 0–5 评分").font(.system(size:10)).foregroundStyle(p.muted); EmptyView() }
             }
             Spacer(minLength: 5)
-            Text("共 \((model.navigation == .folders ? model.snapshot.photos.count : model.visible.count).formatted()) 张照片" + (model.selection.isEmpty || model.navigation == .folders ? "" : " · 已选中 \(model.selection.count) 张"))
+            Text("共 \((model.navigation == .folders ? model.activePhotos.count : model.visible.count).formatted()) 张照片" + (model.selection.isEmpty || model.navigation == .folders ? "" : " · 已选中 \(model.selection.count) 张"))
             if !model.offline.isEmpty { Label("\(model.offline.count) 个来源离线", systemImage: "externaldrive.badge.exclamationmark").foregroundStyle(.orange) }
             if model.selection.count >= 2 && model.navigation != .folders {
                 Button { model.beginComparison() } label: { Label("对比照片", systemImage: "rectangle.split.2x1") }
@@ -291,10 +291,10 @@ struct SidebarView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 2) {
                     sectionTitle("照片库")
-                    nav("全部照片", icon: "square.grid.2x2", value: .all, count: model.snapshot.photos.count)
+                    nav("全部照片", icon: "square.grid.2x2", value: .all, count: model.activePhotos.count)
                     nav("最近添加", icon: "clock", value: .recent)
                     nav("最近浏览", icon: "clock.arrow.circlepath", value: .viewed)
-                    nav("爱心收藏", icon: "heart", value: .favorites, count: model.snapshot.photos.filter(\.isFavorite).count)
+                    nav("爱心收藏", icon: "heart", value: .favorites, count: model.activePhotos.filter(\.isFavorite).count)
                     nav("五星精选", icon: "star", value: .fiveStar)
                     HStack(spacing: 4) {
                         Text("文件夹").font(.system(size: 13)).foregroundStyle(p.muted)
@@ -308,7 +308,7 @@ struct SidebarView: View {
                             .disabled(model.scanning || model.repository == nil)
                     }.padding(.leading, 12).padding(.trailing, 4).padding(.top, 20).padding(.bottom, 8)
                     nav("文件夹总览", icon: "square.grid.2x2", value: .folders)
-                    if model.snapshot.sources.isEmpty { Text("添加目录后显示在这里").font(.caption).foregroundStyle(.tertiary).padding(.horizontal, 12).padding(.vertical, 8) }
+                    if model.activeSources.isEmpty { Text("添加目录后显示在这里").font(.caption).foregroundStyle(.tertiary).padding(.horizontal, 12).padding(.vertical, 8) }
                     ForEach(model.sortedSources) { source in
                         SourceTree(source: source)
                     }

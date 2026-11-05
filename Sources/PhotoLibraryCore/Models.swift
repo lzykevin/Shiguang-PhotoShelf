@@ -6,6 +6,8 @@ public struct PhotoSource: Codable, Identifiable, Equatable, Sendable {
     public var path: String
     public var bookmark: Data?
     public var lastScan: Date?
+    public var detached: Bool?
+    public var isDetached: Bool { detached == true }
     public init(id: UUID = UUID(), name: String, path: String, bookmark: Data? = nil) {
         self.id = id; self.name = name; self.path = path; self.bookmark = bookmark
     }
