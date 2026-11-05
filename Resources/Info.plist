@@ -41,7 +41,7 @@
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/lzykevin/PhotoShelf/main/updates/stable/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/lzykevin/Shiguang-PhotoShelf/main/updates/stable/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>Rg2kD000e3Fn012/8+WJ66tkp5SSZKukO39JvD0b8OQ=</string>
 </dict>

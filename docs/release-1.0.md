@@ -16,7 +16,7 @@ Swift 原生 macOS 本地照片管理应用，让个人照片值得回看、容�
 
 需要 macOS 14 或更新版本，支持 Apple Silicon 与 Intel。
 
-下载 `PhotoShelf-1.0.0.zip`，解压后将应用拖入“应用程序”。
+下载 `Shiguang-PhotoShelf-1.0.0.zip`，解压后将应用拖入“应用程序”。
 
 ## 反馈
 

@@ -2,14 +2,14 @@
 
 ## 当前阶段
 
-版本 1.0.0，构建号 10002。GitHub 仓库为 lzykevin/PhotoShelf。
+版本 1.0.0，构建号 10002。GitHub 仓库为 lzykevin/Shiguang-PhotoShelf。
 保留 com.photoshelf.local 应用标识，使现有沙箱图库继续可用。
 本地 `build.sh` 对 ad-hoc 构建关闭 Hardened Runtime，以允许加载 Sparkle；不会修改系统安全设置。正式 Archive/Export 必须使用 `ENABLE_HARDENED_RUNTIME=YES`，不能把本地构建配置用于公证。
 
 目前没有 Developer ID Application 证书或 Apple 公证。不要将本地签名验证成功当成通过 Gatekeeper 分发检查。
 
 Sparkle 固定为 2.10.1，通过 SPM 同时用于 Xcode 应用与 Swift 测试目标。沙箱使用 Installer/Downloader XPC 服务，不授予主应用整体网络权限。
-更新源为 `https://raw.githubusercontent.com/lzykevin/PhotoShelf/main/updates/stable/appcast.xml`。GitHub 在某些网络下可能无法访问；更新失败应允许稍后重试，本地图库不依赖该服务。
+更新源为 `https://raw.githubusercontent.com/lzykevin/Shiguang-PhotoShelf/main/updates/stable/appcast.xml`。GitHub 在某些网络下可能无法访问；更新失败应允许稍后重试，本地图库不依赖该服务。
 
 ## 密钥
 

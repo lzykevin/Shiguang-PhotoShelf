@@ -24,7 +24,7 @@
 
 ## 安装与更新
 
-从 [GitHub Releases](https://github.com/lzykevin/PhotoShelf/releases/latest) 下载 `PhotoShelf-1.0.0.zip`，解压后将应用拖入“应用程序”。
+从 [GitHub Releases](https://github.com/lzykevin/Shiguang-PhotoShelf/releases/latest) 下载 `Shiguang-PhotoShelf-1.0.0.zip`，解压后将应用拖入“应用程序”。
 
 在“拾光 → 检查更新…”查看新版本，默认开启自动检查，也可以在设置中关闭。自动检查仅在发现新版本时提示，不弹出“已是最新版”。更新检查不上传照片或整理数据。
 
