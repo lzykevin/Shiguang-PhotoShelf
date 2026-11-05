@@ -1,0 +1,24 @@
+.build/
+build/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+output/
+# Generated project (recreated by scripts/build.sh)
+PhotoShelf.xcodeproj/
+# Local acceptance evidence may contain personal folder names or screenshots.
+docs/validation.md
+docs/demo-interface-diff.md
+docs/release-1.0-acceptance.md
+# Signing material and local configuration must never be published.
+*.p12
+*.p8
+*.pem
+*.key
+*.mobileprovision
+.env
+.env.*
+*.xcarchive/
+*.dmg
+*.zip
+__pycache__/
